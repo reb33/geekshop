@@ -9,7 +9,7 @@
 <!-- Navigation -->
 {% block nav_products %}
 <li class="nav-item active">
-    <a class="nav-link" href="{% url 'products' %}">Каталог</a>
+    <a class="nav-link" href="{% url 'products:main' %}">Каталог</a>
 </li>
 {% endblock %}
 {% block nav_extra_links %}
@@ -31,11 +31,9 @@
 
             <h1 class="my-4">GeekShop</h1>
             <div class="list-group">
-                <a href="#" class="list-group-item">Новинки</a>
-                <a href="#" class="list-group-item">Одежда</a>
-                <a href="#" class="list-group-item">Обувь</a>
-                <a href="#" class="list-group-item">Аксессуары</a>
-                <a href="#" class="list-group-item">Подарки</a>
+                {% for category in categories %}
+                <a href="#" class="list-group-item">{{ category.name }}</a>
+                {% endfor %}
             </div>
 
         </div>
@@ -77,14 +75,14 @@
                     <div class="card h-100">
                         <a href="#">
                             <img class="card-img-top"
-                                 src="{% static product.img %}"
+                                 src="{{ product.img.url }}"
                                  alt="">
                         </a>
                         <div class="card-body">
                             <h4 class="card-title">
                                 <a href="#">{{ product.name }}</a>
                             </h4>
-                            <h5>{{ product.cost|floatformat:"2g" }} руб.</h5>
+                            <h5>{{ product.price|floatformat:"2g" }} руб.</h5>
                             <p class="card-text">{{ product.desc }}</p>
                         </div>
                         <div class="card-footer text-center">
