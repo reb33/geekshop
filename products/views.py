@@ -1,8 +1,6 @@
 from django.shortcuts import render
 
-
-# Create your views here.
-from products.models import Product
+from products.models import Product, ProductCategory
 
 
 def main(request):
@@ -14,9 +12,11 @@ def main(request):
 
 def products(request):
     items = Product.objects.all()
+    categories = ProductCategory.objects.all()
     ctx = {
         'title': 'GeekShop - Каталог',
-        'products': items
+        'products': items,
+        'categories': categories
     }
     print()
     return render(request, 'products.html', ctx)
