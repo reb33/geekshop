@@ -22,5 +22,6 @@ from geekshop import settings
 urlpatterns = [
     path('', products.main, name='main'),
     path('products/', include('products.urls', namespace='products')),
+    path('auth/', include('authapp.urls', namespace='authapp')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
