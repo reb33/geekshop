@@ -1,0 +1,22 @@
+{% extends 'authapp/base.html' %}
+{% block card_header %}Авторизация{% endblock %}
+{% block card_body %}
+    <form action="{% url 'authapp:login' %}" method="post">
+        {% csrf_token %}
+        {{ form.errors }}
+        {% for field in form %}
+        <div class="form-group">
+            <label class="small mb-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+        </div>
+        {% endfor %}
+        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+            <a class="small" href="#">Забыли пароль?</a>
+            <input class="btn btn-primary" type="submit" value="Авторизоваться">
+        </div>
+    </form>
+{% endblock %}
+{% block card_footer %}
+    <div class="small"><a href="{% url 'authapp:register' %}">Нужен аккаунт? Зарегистрируйся!</a></div>
+{% endblock %}
+

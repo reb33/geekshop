@@ -1,0 +1,29 @@
+{% extends 'authapp/base.html' %}
+{% block flex_width %}"col-lg-7"{% endblock %}
+{% block card_header %}Создать аккаунт{% endblock %}
+{% block card_body %}
+    <form method="post" action="{% url "authapp:register" %}">
+        {% csrf_token %}
+        {{ form.errors }}
+        {% for field in form %}
+            {% if forloop.counter0|divisibleby:"2" is True %}
+                <div class="form-row">
+            {% endif %}
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="small mb-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                </div>
+            {% if forloop.counter0|divisibleby:"2" is False %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="form-group mt-4 mb-0">
+            <input class="btn btn-primary btn-block" type="submit" value="Создать аккаунт">
+        </div>
+    </form>
+{% endblock %}
+{% block card_footer %}
+    <div class="small"><a href="{% url "authapp:login" %}">Уже есть аккаунт? Авторизоваться</a></div>
+{% endblock %}
