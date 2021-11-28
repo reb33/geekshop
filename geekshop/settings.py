@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'products',
-    'authapp'
+    'authapp',
+    'baskets'
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authapp.ShopUser'
+LOGIN_URL = 'authapp:login'

@@ -1,6 +1,12 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from curses.ascii import isdigit
+from string import digits
+
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
+from django.core.exceptions import ValidationError
 
 from authapp.models import ShopUser
+from authapp.validators import check_name, check_size_file
 
 
 class ShopUserLoginForm(AuthenticationForm):
@@ -31,3 +37,40 @@ class ShopUserRegistrationForm(UserCreationForm):
         self.fields['password2'].widget.attrs['placeholder'] = 'Подтвердите пароль'
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
+
+    def clean_first_name(self):
+        check_name(self.cleaned_data['first_name'])
+        return self.cleaned_data['first_name']
+
+    def clean_last_name(self):
+        check_name(self.cleaned_data['last_name'])
+        return self.cleaned_data['last_name']
+
+
+class UserProfileForm(UserChangeForm):
+    avatar = forms.FileField(widget=forms.FileInput, required=False, validators=[check_size_file])
+    age = forms.IntegerField(widget=forms.NumberInput, required=False, label='Возраст')
+
+    class Meta:
+        model = ShopUser
+        fields = ['first_name', 'last_name', 'username', 'email', 'avatar', 'age']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['aria-describedby'] = 'usernameHelp'
+        self.fields['username'].widget.attrs['readonly'] = True
+
+        self.fields['email'].widget.attrs['aria-describedby'] = 'emailHelp'
+        self.fields['email'].widget.attrs['readonly'] = True
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control py-4'
+        self.fields['avatar'].widget.attrs['class'] = 'custom-file-input'
+        self.fields['avatar'].widget.attrs['size'] = 50
+
+    def clean_first_name(self):
+        check_name(self.cleaned_data['first_name'])
+        return self.cleaned_data['first_name']
+
+    def clean_last_name(self):
+        check_name(self.cleaned_data['last_name'])
+        return self.cleaned_data['last_name']

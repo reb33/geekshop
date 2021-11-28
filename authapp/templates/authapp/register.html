@@ -1,10 +1,9 @@
 {% extends 'authapp/base.html' %}
-{% block flex_width %}"col-lg-7"{% endblock %}
+{% block flex_width %}<div class="col-lg-7">{% endblock %}
 {% block card_header %}Создать аккаунт{% endblock %}
 {% block card_body %}
     <form method="post" action="{% url "authapp:register" %}">
         {% csrf_token %}
-        {{ form.errors }}
         {% for field in form %}
             {% if forloop.counter0|divisibleby:"2" is True %}
                 <div class="form-row">

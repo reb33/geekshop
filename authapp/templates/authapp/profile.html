@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+{#<body class="bg-light">#}
+<!-- Navigation -->
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <h4 class="mt-3 mb-3">Профиль</h4>
+                <div class="col-lg-12 text-center">
+                    <img width="100" height="100"
+                         src="{% if user.avatar %} {{ user.avatar.url }} {% else %} {% static 'vendor/img/users/default_avatar.jpg' %}{% endif %}"
+                         class="img-thumbnail">
+                </div>
+                <form action="{% url "authapp:profile" %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        {% with field=form.first_name %}
+                            {% include "authapp/profile_field.html" %}
+                        {% endwith %}
+                        {% with field=form.last_name %}
+                            {% include "authapp/profile_field.html" %}
+                        {% endwith %}
+                    </div>
+                    <div class="form-row mb-2">
+                        <div class="col-lg-12">
+                            <div class="custom-file">
+                                {{ form.avatar }}
+                                <label class="custom-file-label" for="{{ form.avatar.id_for_label }}">Выберите
+                                    изображение</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        {% with field=form.username %}
+                            {% include "authapp/profile_field.html" %}
+                        {% endwith %}
+                        {% with field=form.email %}
+                            {% include "authapp/profile_field.html" %}
+                        {% endwith %}
+                    </div>
+                    <div class="form-row">
+                        {% with field=form.age %}
+                            {% include "authapp/profile_field.html" %}
+                        {% endwith %}
+                    </div>
+                    <div class="form-row">
+                        <div class="col-lg-12" style="margin-top: 33px;">
+                            <input class="btn btn-info btn-block" type="submit" value="Сохранить">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% include "baskets/profile_baskets.html" %}
+        </div>
+    </div>
+{% endblock %}
