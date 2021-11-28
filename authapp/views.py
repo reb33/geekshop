@@ -57,9 +57,11 @@ def profile(request):
             form.save()
         else:
             print(form.errors)
+    else:
+        form = UserProfileForm(instance=request.user)
     ctx = {
         'title': 'GeekShop - Профиль',
-        'form': UserProfileForm(instance=request.user),
+        'form': form,
         'baskets': Basket.objects.filter(user=request.user)
     }
     return render(request, 'authapp/profile.html', ctx)
