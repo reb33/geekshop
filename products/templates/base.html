@@ -74,11 +74,16 @@
 <!-- Bootstrap core JavaScript -->
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/geekshop.js' %}"></script>
 
 <!-- FontAwesome script -->
 <script src="{%  static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
 
-{% block extra_js %} {% endblock %}
+<script>
+    $(document).on("DOMContentLoaded", ()=>{
+        $('a.nav-link[href="{{ request.path }}"]').parent().addClass('active')
+    });
+</script>
 
 </body>
 
