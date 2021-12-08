@@ -3,13 +3,13 @@ from string import digits
 from django.core.exceptions import ValidationError
 
 
-def check_name(data):
+def check_name(data, field_name='Имя'):
     if len(data) < 1:
-        raise ValidationError("Имя обязательное поле")
+        raise ValidationError(f"{field_name} обязательное поле")
     if data[0] in digits:
-        raise ValidationError("Имя не может начинаться с цифры")
+        raise ValidationError(f"{field_name} не может начинаться с цифры")
     if data.isdigit():
-        raise ValidationError("Имя не может состаять из цифр")
+        raise ValidationError(f"{field_name} не может состаять из цифр")
 
 
 def check_size_file(data):

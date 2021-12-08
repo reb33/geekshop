@@ -1,18 +1,22 @@
 [
   {
     "name": "Одежда",
-    "description": ""
+    "description": "",
+    "is_active": true
   },
   {
     "name": "Аксессуары",
-    "description": ""
+    "description": "",
+    "is_active": true
   },
   {
     "name": "Обувь",
-    "description": ""
+    "description": "",
+    "is_active": true
   },
   {
     "name": "Новинки",
-    "description": ""
+    "description": "",
+    "is_active": true
   }
 ]
