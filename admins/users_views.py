@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -7,6 +8,7 @@ from admins.forms import AdminUserRegistrationForm, AdminUserEditForm
 from authapp.models import ShopUser
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def admin_users(request):
     users = ShopUser.objects.all()
     ctx = {
@@ -16,6 +18,7 @@ def admin_users(request):
     return render(request, 'admins/admin-users-read.html', ctx)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def admin_users_create(request):
     if request.method == 'POST':
         form = AdminUserRegistrationForm(data=request.POST, files=request.FILES)
@@ -29,6 +32,7 @@ def admin_users_create(request):
     return render(request, 'admins/admin-users-create.html', ctx)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def admin_users_update(request, user_id):
     user = ShopUser.objects.get(id=user_id)
     if request.method == 'POST':
@@ -49,6 +53,7 @@ def admin_users_update(request, user_id):
     return render(request, 'admins/admin-users-update-delete.html', ctx)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def admin_users_delete(request, user_id):
     user = ShopUser.objects.get(id=user_id)
     user.is_active = False

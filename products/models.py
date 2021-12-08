@@ -23,6 +23,3 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_category_name(self):
-        return ProductCategory.objects.get(id=self.category)['name']

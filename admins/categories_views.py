@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -7,6 +8,7 @@ from admins.forms import CategoryForm
 from products.models import ProductCategory
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def admin_categories(request):
     cats = ProductCategory.objects.all()
     ctx = {
@@ -16,6 +18,7 @@ def admin_categories(request):
     return render(request, 'admins/admin-categories-read.html', ctx)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def admin_categories_create(request):
     if request.method == 'POST':
         form = CategoryForm(data=request.POST)
@@ -31,6 +34,7 @@ def admin_categories_create(request):
     return render(request, 'admins/admin-categories-create.html', ctx)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def admin_categories_update(request, cat_id):
     cat = ProductCategory.objects.get(id=cat_id)
     if request.method == 'POST':
@@ -48,6 +52,7 @@ def admin_categories_update(request, cat_id):
     return render(request, 'admins/admin-categories-update-delete.html', ctx)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def admin_categories_delete(request, cat_id):
     cat = ProductCategory.objects.get(id=cat_id)
     cat.is_active = False

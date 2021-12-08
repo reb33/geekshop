@@ -55,9 +55,13 @@ class ProductForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'img', 'price', 'desc', 'quality']
+        fields = ['name', 'img', 'price', 'desc', 'quality', 'category']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
+        self.fields['category'].widget.attrs['class'] = 'form-control py-2'
+        self.fields['img'].widget.attrs['class'] = 'custom-file-label'
+        # if self.category:
+        #     self.fields['category'].widget.choices = self.category

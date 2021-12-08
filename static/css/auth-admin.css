@@ -2030,6 +2030,10 @@ pre code {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+select.form-control {
+    height: calc(1.5em + 0.75rem + 2px);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .form-control {
         transition: none;
