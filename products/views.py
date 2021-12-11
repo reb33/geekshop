@@ -28,7 +28,7 @@ def products(request, id_category=None, page=1):
 
     ctx = {
         'title': 'GeekShop - Каталог',
-        'products': items,
+        'products': products_paginator,
         'categories': categories
     }
     return render(request, 'products.html', ctx)
