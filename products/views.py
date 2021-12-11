@@ -11,8 +11,10 @@ def main(request):
     return render(request, 'index.html', ctx)
 
 
-def products(request, id_category=None, page=1):
+def products(request):
     categories = ProductCategory.objects.all()
+    id_category = request.GET.get('id_category')
+    page = request.GET.get('page', 1)
 
     if id_category:
         items = Product.objects.filter(category=id_category)
