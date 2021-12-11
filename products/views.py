@@ -1,5 +1,7 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 
 from products.models import Product, ProductCategory
 
@@ -33,4 +35,7 @@ def products(request):
         'products': products_paginator,
         'categories': categories
     }
+    if request.is_ajax():
+        result = render_to_string('includes/card.html', ctx)
+        return JsonResponse({'result': result})
     return render(request, 'products.html', ctx)

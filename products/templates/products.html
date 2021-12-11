@@ -31,7 +31,7 @@
                     {% for category in categories %}
                         <a href="{% url 'products:main'%}?id_category={{ category.id }}" class="list-group-item">{{ category.name }}</a>
                     {% endfor %}
-                    <a href="{% url 'products:main'  %}" class="list-group-item">Показать все</a>
+                    <a href="{% url 'products:main' %}" class="list-group-item">Показать все</a>
                 </div>
 
             </div>
@@ -73,21 +73,27 @@
                     {% include 'includes/card.html' %}
                 </div>
 
+                <div class="products_pagination">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
+                                <button class="page-link" data-href="
+                                        {% if products.has_previous %}{% url 'products:main'%}?id_category={{ request.GET.id_category }}&page={{ products.previous_page_number }}{% endif %}"
+                                   tabindex="-1" aria-disabled="true">Previous</button>
+                            </li>
+                            {% for page in products.paginator.page_range %}
+                                <li class="page-item"><button class="page-link"
+                                                         data-href="{% url 'products:main'%}?id_category={{ request.GET.id_category }}&page={{ page }}">{{ page }}</button></li>
+                            {% endfor %}
 
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
-                            <a class="page-link" href="{% if products.has_previous %}{% url 'products:main'%}?id_category={{ request.GET.id_category }}&page={{ products.previous_page_number }}{% endif %}" tabindex="-1" aria-disabled="true">Previous</a>
-                        </li>
-                        {% for page in products.paginator.page_range %}
-                            <li class="page-item"><a class="page-link" href="{% url 'products:main'%}?id_category={{ request.GET.id_category }}&page={{ page }}">{{ page }}</a></li>
-                        {% endfor %}
+                            <li class="page-item {% if not products.has_next %}disabled{% endif %}">
+                                <button class="page-link" data-href="
+                                        {% if products.has_next %}{% url 'products:main'%}?id_category={{ request.GET.id_category }}&page={{ products.next_page_number }}{% endif %}">Next</button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
 
-                        <li class="page-item {% if not products.has_next %}disabled{% endif %}">
-                            <a class="page-link" href="{% if products.has_next %}{% url 'products:main'%}?id_category={{ request.GET.id_category }}&page={{ products.next_page_number }}{% endif %}">Next</a>
-                        </li>
-                    </ul>
-                </nav>
 
             </div>
 
