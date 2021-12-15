@@ -28,4 +28,16 @@ window.addEventListener('load', ()=> {
         });
         e.preventDefault();
     })
+
+    $('.products_pagination').on('click', 'button.page-link', e=>{
+        let input = e.target;
+        let urlPage = input.attributes['data-href'].value;
+        $.ajax({
+            url: urlPage,
+            success: data=>{
+                $('.card_add_basket').html(data.result);
+            }
+        });
+        e.preventDefault();
+    })
 })

@@ -1,9 +1,5 @@
-from curses.ascii import isdigit
-from string import digits
-
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
-from django.core.exceptions import ValidationError
 
 from authapp.models import ShopUser
 from authapp.validators import check_name, check_size_file
@@ -72,5 +68,5 @@ class UserProfileForm(UserChangeForm):
         return self.cleaned_data['first_name']
 
     def clean_last_name(self):
-        check_name(self.cleaned_data['last_name'])
+        check_name(self.cleaned_data['last_name'], field_name='Фамилия')
         return self.cleaned_data['last_name']
