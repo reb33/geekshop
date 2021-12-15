@@ -45,7 +45,7 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid">
-                <h1 class="mt-4">{{ header }}</h1>
+                {% block header %}<h1 class="mt-4">{{ header }}</h1> {% endblock %}
                 {% include "show_error_and_mess.html" %}
                 {% block content %}
                 {% endblock %}

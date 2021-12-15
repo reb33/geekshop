@@ -1,62 +1,76 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from admins.forms import AdminUserRegistrationForm, AdminUserEditForm
 from authapp.models import ShopUser
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def admin_users(request):
-    users = ShopUser.objects.all()
-    ctx = {
-        'header': 'Пользователи',
-        'users': users
-    }
-    return render(request, 'admins/admin-users-read.html', ctx)
+class UserListView(ListView):
+    model = ShopUser
+    template_name = 'admins/admin-users-read.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['title'] = 'Список пользователей'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def admin_users_create(request):
-    if request.method == 'POST':
-        form = AdminUserRegistrationForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('admins:admin_users'))
-    ctx = {
-        'header': 'Создание пользователя',
-        'form': AdminUserRegistrationForm()
-    }
-    return render(request, 'admins/admin-users-create.html', ctx)
+class UserCreateView(CreateView):
+    model = ShopUser
+    template_name = 'admins/admin-users-create.html'
+    form_class = AdminUserRegistrationForm
+    success_url = reverse_lazy('admins:admin_users')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['title'] = 'Создание пользователя'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def admin_users_update(request, user_id):
-    user = ShopUser.objects.get(id=user_id)
-    if request.method == 'POST':
-        form = AdminUserEditForm(instance=user, data=request.POST, files=request.FILES)
-        if form.is_valid():
-            messages.success(request, 'Данные обновлены')
-            form.save()
-            user = ShopUser.objects.get(id=user_id)
-        else:
-            print(form.errors)
-    else:
-        form = AdminUserEditForm(instance=user)
-    ctx = {
-        'header': f'Редактирование пользователя | {user.username}',
-        'selected_user': user,
-        'form': form
-    }
-    return render(request, 'admins/admin-users-update-delete.html', ctx)
+class UserUpdateView(UpdateView):
+    model = ShopUser
+    template_name = 'admins/admin-users-update-delete.html'
+    form_class = AdminUserEditForm
+    success_url = reverse_lazy('admins:admin_users')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['title'] = 'Редактирование пользователя'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
-@user_passes_test(lambda u: u.is_superuser)
-def admin_users_delete(request, user_id):
-    user = ShopUser.objects.get(id=user_id)
-    user.is_active = False
-    user.save()
-    messages.success(request, f'Пользователь {user.username} отключен')
-    return HttpResponseRedirect(reverse('admins:admin_users'))
+class UserDeleteView(DeleteView):
+    model = ShopUser
+    template_name = 'admins/admin-users-update-delete.html'
+    form_class = AdminUserEditForm
+    success_url = reverse_lazy('admins:admin_users')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(UserDeleteView, self).get_context_data(**kwargs)
+        context['title'] = 'Удалить пользователя'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
