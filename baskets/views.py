@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, JsonResponse
-
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 # Create your views here.
 from django.template.loader import render_to_string
 
@@ -20,10 +19,11 @@ def basket_add(request, id):
         basket.save()
     else:
         Basket.objects.create(user=user, product=product, quantity=1)
-    products = Product.objects.all()
-    ctx = {'products': products}
-    result = render_to_string('includes/card.html', ctx)
-    return JsonResponse({'result': result})
+    # products = Product.objects.all()
+    # ctx = {'products': products}
+    # result = render_to_string('includes/card.html', ctx)
+    # return JsonResponse({'result': result})
+    return HttpResponse()
 
 
 @login_required

@@ -22,9 +22,9 @@ window.addEventListener('load', ()=> {
         let urlAdd = input.attributes['data-href'].value;
         $.ajax({
             url: urlAdd,
-            success: data=>{
-                $('.card_add_basket').html(data.result);
-            }
+            // success: data=>{
+            //     $('.card_add_basket').html(data.result);
+            // }
         });
         e.preventDefault();
     })
