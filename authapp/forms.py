@@ -1,3 +1,6 @@
+import hashlib
+import random
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 
@@ -41,6 +44,14 @@ class ShopUserRegistrationForm(UserCreationForm):
     def clean_last_name(self):
         check_name(self.cleaned_data['last_name'])
         return self.cleaned_data['last_name']
+
+    def save(self, commit=True):
+        user = super().save(commit)
+        user.is_active = False
+        solt = hashlib.sha1(str(random.random()).encode()).hexdigest()[:6]
+        user.activation_key = hashlib.sha1((user.email+solt).encode()).hexdigest()
+        user.save()
+        return user
 
 
 class UserProfileForm(UserChangeForm):
