@@ -5,11 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView, LoginView
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, UpdateView
 
-from authapp.forms import ShopUserLoginForm, ShopUserRegistrationForm, UserProfileForm
+from authapp.forms import ShopUserLoginForm, ShopUserRegistrationForm, UserProfileForm, UserProfileEditForm
 from authapp.models import ShopUser
 from baskets.models import Basket
 from geekshop.settings import EMAIL_HOST_USER, DOMAIN_NAME
@@ -107,6 +107,13 @@ class ProfileUpdateView(UpdateView, BaseClassContextMixin, UserDispatchMixin):
     title = "GeekShop - Профиль"
     success_url = reverse_lazy("authapp:profile")
 
+    def post(self, request, *args, **kwargs):
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        profile_form = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
+        if form.is_valid() and profile_form.is_valid():
+            form.save()
+        return redirect(self.success_url)
+
     def form_valid(self, form):
         messages.success(self.request, 'Данные обновлены')
         return super().form_valid(form)
@@ -114,11 +121,11 @@ class ProfileUpdateView(UpdateView, BaseClassContextMixin, UserDispatchMixin):
     def get_object(self, queryset=None):
         return get_object_or_404(self.model, pk=self.request.user.pk)
 
-    # передаеься через контекстный процессор products.context_processors.basket
-    # def get_context_data(self, **kwargs):
-    #     ctx = super().get_context_data(**kwargs)
-    #     ctx['baskets'] = Basket.objects.filter(user=self.request.user)
-    #     return ctx
+    # baskets передаеься через контекстный процессор products.context_processors.basket
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
+        return ctx
 
 
 
