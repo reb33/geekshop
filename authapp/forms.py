@@ -4,7 +4,7 @@ import random
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 
-from authapp.models import ShopUser
+from authapp.models import ShopUser, UserProfile
 from authapp.validators import check_name, check_size_file
 
 
@@ -49,7 +49,7 @@ class ShopUserRegistrationForm(UserCreationForm):
         user = super().save(commit)
         user.is_active = False
         solt = hashlib.sha1(str(random.random()).encode()).hexdigest()[:6]
-        user.activation_key = hashlib.sha1((user.email+solt).encode()).hexdigest()
+        user.activation_key = hashlib.sha1((user.email + solt).encode()).hexdigest()
         user.save()
         return user
 
@@ -81,3 +81,22 @@ class UserProfileForm(UserChangeForm):
     def clean_last_name(self):
         check_name(self.cleaned_data['last_name'], field_name='Фамилия')
         return self.cleaned_data['last_name']
+
+
+class UserProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        exclude = ('user',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name == 'gender':
+                field.widget.attrs['class'] = 'form-control py-2'
+            else:
+                field.widget.attrs['class'] = 'form-control py-4'
+
+
+
+
+

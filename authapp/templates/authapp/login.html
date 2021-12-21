@@ -19,6 +19,11 @@
     </form>
 {% endblock %}
 {% block card_footer %}
+    <div class="list-group-horizontal small">
+        <a href="{% url 'social:begin' 'vk-oauth2' %}?next='/'">
+            <i class="fab fa-vk" style="font-size:36px"></i>
+        </a>
+    </div>
     <div class="small"><a href="{% url 'authapp:register' %}">Нужен аккаунт? Зарегистрируйся!</a></div>
 {% endblock %}
 

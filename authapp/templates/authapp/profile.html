@@ -48,6 +48,18 @@
                         {% with field=form.age %}
                             {% include "authapp/profile_field.html" %}
                         {% endwith %}
+                        {% with field=profile.gender %}
+                            {% include "authapp/profile_field.html" %}
+                        {% endwith %}
+
+                    </div>
+                    <div class="form-row">
+                        {% with field=profile.languages %}
+                            {% include "authapp/profile_field.html" %}
+                        {% endwith %}
+                        {% with field=profile.about %}
+                            {% include "authapp/profile_field.html" %}
+                        {% endwith %}
                     </div>
                     <div class="form-row">
                         <div class="col-lg-12" style="margin-top: 33px;">
