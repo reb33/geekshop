@@ -1,7 +1,6 @@
 import contextlib
 
 from django.contrib import auth, messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView, LoginView
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
@@ -11,7 +10,6 @@ from django.views.generic import FormView, UpdateView
 
 from authapp.forms import ShopUserLoginForm, ShopUserRegistrationForm, UserProfileForm, UserProfileEditForm
 from authapp.models import ShopUser
-from baskets.models import Basket
 from geekshop.settings import EMAIL_HOST_USER, DOMAIN_NAME
 from products.mixin import BaseClassContextMixin, UserDispatchMixin
 
@@ -21,6 +19,7 @@ class LoginListView(LoginView, BaseClassContextMixin):
     form_class = ShopUserLoginForm
     title = "GeekShop - Login"
     success_url = reverse_lazy('main')
+
 
 # def login(request):
 #     if request.method == "POST":
@@ -76,10 +75,10 @@ class RegisterListView(FormView, BaseClassContextMixin):
         try:
             user = ShopUser.objects.get(email=email)
             if (
-                user
-                and user.activation_key == activation_key
-                and not user.is_activation_key_expires()
-                and not user.is_active
+                    user
+                    and user.activation_key == activation_key
+                    and not user.is_activation_key_expires()
+                    and not user.is_active
             ):
                 user.activation_key = ''
                 user.activation_key_expires = None
@@ -94,6 +93,7 @@ class RegisterListView(FormView, BaseClassContextMixin):
 
 class Logout(LogoutView):
     template_name = 'index.html'
+
 
 # def logout(request):
 #     auth.logout(request)
@@ -126,8 +126,6 @@ class ProfileUpdateView(UpdateView, BaseClassContextMixin, UserDispatchMixin):
         ctx = super().get_context_data(**kwargs)
         ctx['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
         return ctx
-
-
 
 # @login_required
 # def profile(request):
