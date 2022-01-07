@@ -31,20 +31,33 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-            <span class="navbar-brand">{% now "d.m.Y"%}</span>
-            <ul class="navbar-nav ml-auto">
+            <span class="navbar-brand">{% now "d.m.Y" %}</span>
+            <div class="navbar-nav ml-auto">
                 {% block nav_products %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'products:main' %}">Каталог <i class="fas fa-shopping-bag"></i> </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products:main' %}">Каталог <i class="fas fa-shopping-bag"></i>
+                        </a>
+                    </li>
                 {% endblock %}
                 {% block nav_extra_links %}
                 {% endblock %}
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url "authapp:profile" %}">{{ user.username }}
-                            <i class="fas fa-user-circle"></i>
-                        </a>
+                        <div class="dropdown">
+                            <button class="btn nav-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ user.username }}
+                                <span class="caret"></span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="{% url "authapp:profile" %}">
+                                    профиль
+                                </a>
+                                <a class="dropdown-item" href="{% url "orders:list" %}">
+                                    заказы
+                                </a>
+                            </div>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "admins:index" %}">
@@ -56,13 +69,14 @@
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url "authapp:login" %}">Войти <i class="fas fa-sign-in-alt"></i></a>
+                        <a class="nav-link" href="{% url "authapp:login" %}">Войти <i
+                                class="fas fa-sign-in-alt"></i></a>
                     </li>
                 {% endif %}
 
-            </ul>
+                </ul>
+            </div>
         </div>
-    </div>
 </nav>
 {% include "show_error_and_mess.html" %}
 
@@ -77,10 +91,10 @@
 <script src="{% static 'js/geekshop.js' %}"></script>
 
 <!-- FontAwesome script -->
-<script src="{%  static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
+<script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
 
 <script>
-    $(document).on("DOMContentLoaded", ()=>{
+    $(document).on("DOMContentLoaded", () => {
         $('a.nav-link[href="{{ request.path }}"]').parent().addClass('active')
     });
 </script>

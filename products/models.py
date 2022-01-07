@@ -17,9 +17,9 @@ class Product(models.Model):
     img = models.ImageField(upload_to='products_uploads/', blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=7)
     desc = models.TextField(max_length=100)
-    quality = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField()
     category = models.ForeignKey('ProductCategory', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name
+        return f'{self.name} | {self.category}'
