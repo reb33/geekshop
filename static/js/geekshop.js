@@ -26,6 +26,7 @@ window.addEventListener('load', ()=> {
             //     $('.card_add_basket').html(data.result);
             // }
         });
+        alert('товар добавлен вы корзину')
         e.preventDefault();
     })
 

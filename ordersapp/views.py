@@ -1,5 +1,7 @@
 # Create your views here.
 from django.db import transaction
+from django.db.models.signals import pre_save, pre_delete
+from django.dispatch import receiver
 from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -7,7 +9,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from baskets.models import Basket
-from ordersapp.forms import OrderForm, OrderItemForm
+from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 from products.mixin import BaseClassContextMixin
 
@@ -31,7 +33,7 @@ class OrderCreate(CreateView, BaseClassContextMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=1)
+        OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=0)
         if self.request.POST:
             formset = OrderFormSet(self.request.POST)
         else:
@@ -63,6 +65,12 @@ class OrderCreate(CreateView, BaseClassContextMixin):
 
         return super().form_valid(form)
 
+    def post(self, request, *args, **kwargs):
+        basket_items = Basket.objects.filter(user=self.request.user).exclude(quantity=0)
+        # basket_items.delete(return_quantity=False)
+        basket_items.delete()
+        return super().post(request, *args, **kwargs)
+
 
 class OrderUpdate(UpdateView):
     model = Order
@@ -72,7 +80,7 @@ class OrderUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=1)
+        OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=0)
         if self.request.POST:
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
@@ -114,3 +122,34 @@ def order_forming_complete(request, pk):
     order.save()
 
     return HttpResponseRedirect(reverse('orders:list'))
+
+
+@receiver(pre_save, sender=OrderItem)
+@receiver(pre_save, sender=Basket)
+def product_quantity_update_save(sender, instance, **kwargs):
+    if instance.pk:
+        instance.product.quantity -= instance.quantity - Basket.objects.get(pk=instance.pk).quantity
+    else:
+        instance.product.quantity -= instance.quantity
+    instance.product.save()
+
+
+@receiver(pre_delete, sender=OrderItem)
+@receiver(pre_delete, sender=Basket)
+def product_quantity_update_delete(sender, instance, **kwargs):
+    instance.product.quantity += instance.quantity
+    instance.product.save()
+
+#     def delete(self, return_quantity=True, *args, **kwargs):
+#         if return_quantity:
+#             self.product.quantity += self.quantity
+#             self.product.save()
+#         return super().delete(*args, **kwargs)
+#
+#     def save(self, *args, **kwargs):
+#         if self.pk:
+#             self.product.quantity -= self.quantity - Basket.objects.get(pk=self.pk).quantity
+#         else:
+#             self.product.quantity -= self.quantity
+#         self.product.save()
+#         super().save(*args, **kwargs)

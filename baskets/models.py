@@ -5,7 +5,19 @@ from authapp.models import ShopUser
 from products.models import Product
 
 
+# class BasketQuerySet(models.QuerySet):
+#
+#     def delete(self, return_quantity=True):
+#         if return_quantity:
+#             for item in self:
+#                 item.product.quantity += item.quantity
+#                 item.product.save()
+#         return super().delete()
+
+
 class Basket(models.Model):
+    # objects = BasketQuerySet.as_manager()
+
     user = models.ForeignKey(ShopUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name='количество', default=0)
@@ -23,3 +35,19 @@ class Basket(models.Model):
 
     def total_quantity(self):
         return sum(basket.quantity for basket in Basket.objects.filter(user=self.user))
+
+    # def delete(self, return_quantity=True, *args, **kwargs):
+    #     if return_quantity:
+    #         self.product.quantity += self.quantity
+    #         self.product.save()
+    #     return super().delete(*args, **kwargs)
+    #
+    # def save(self, *args, **kwargs):
+    #     if self.pk:
+    #         self.product.quantity -= self.quantity - Basket.objects.get(pk=self.pk).quantity
+    #     else:
+    #         self.product.quantity -= self.quantity
+    #     self.product.save()
+    #     super().save(*args, **kwargs)
+
+

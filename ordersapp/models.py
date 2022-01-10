@@ -37,7 +37,7 @@ class Order(models.Model):
         return 'Текущий заказ: {}'.format(self.id)
 
     def get_total_quantity(self):
-        return self.orderitems.count()
+        return sum(map(lambda i: i.quantity, self.orderitems.select_related()))
 
     def get_total_cost(self):
         return sum(map(lambda i: i.get_product_cost(), self.orderitems.select_related()))
