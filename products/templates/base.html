@@ -73,12 +73,14 @@
                                 class="fas fa-sign-in-alt"></i></a>
                     </li>
                 {% endif %}
-
-                </ul>
             </div>
         </div>
+    </div>
 </nav>
-{% include "show_error_and_mess.html" %}
+<div id="div_messages">
+    {% include "show_error_and_mess.html" %}
+</div>
+
 
 <!-- Page Content -->
 {% block content %}{% endblock %}

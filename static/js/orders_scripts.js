@@ -51,6 +51,20 @@ window.addEventListener('load', () => {
         orderSummaryUpdate(price_arr[orderitem_num], delta_quantity);
     });
 
+    $('.order_form').on('change', 'select.form-control',  e=>{
+        let target = e.target;
+        let product_pk = target.value;
+        let row = parseInt(target.name.split('-')[1])
+
+        $.ajax({
+            url: `/orders/get_product_price/${product_pk}`,
+            success: data=> {
+                $('.td3>span').filter((num,el)=>num===row).text(`${data.price.replace('.',',')} руб`);
+                recalcArrays()
+            }
+        })
+    });
+
     function orderSummaryUpdate(orderitem_price, delta_quantity){
         delta_cost = orderitem_price * delta_quantity;
         order_total_cost = Number((order_total_cost+delta_cost));
@@ -65,23 +79,24 @@ window.addEventListener('load', () => {
         deleteText : 'удалить',
         prefix : 'orderitems',
         removed: deleteOrderItem,
-        added: addOrderItem
+        added: recalcArrays
     })
 
     function deleteOrderItem(row){
         let target_name = row[0].querySelector('input[type=number]').name;
         orderitem_num = parseInt(target_name.split('-')[1]);
-        delta_quantity = -quantity_arr[orderitem_num]
+        delta_quantity = -quantity_arr[orderitem_num] || 0;
         orderSummaryUpdate(price_arr[orderitem_num], delta_quantity);
     }
 
-    function addOrderItem(row){
+    function recalcArrays(){
         let total_forms = parseInt($('input#id_orderitems-TOTAL_FORMS').val());
         console.log(total_forms);
 
-    for (let i = 0; i < total_forms; i++) {
-        quantity_arr[i] = parseInt($(`#id_orderitems-${i}-quantity`).val() || 0);
-        $('.td3>span').each((num,el)=>price_arr[num]=parseFloat($(el).text().replace(',', '.')));
+        for (let i = 0; i < total_forms; i++) {
+            quantity_arr[i] = parseInt($(`#id_orderitems-${i}-quantity`).val() || 0);
+            $('.td3>span').each((num,el)=>price_arr[num]=parseFloat($(el).text().replace(',', '.')));
+        }
     }
-    }
+
 })

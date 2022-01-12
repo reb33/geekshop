@@ -3,7 +3,7 @@ from django.db import transaction
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
@@ -12,6 +12,7 @@ from baskets.models import Basket
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 from products.mixin import BaseClassContextMixin
+from products.models import Product
 
 
 class OrderList(ListView, BaseClassContextMixin):
@@ -122,6 +123,10 @@ def order_forming_complete(request, pk):
     order.save()
 
     return HttpResponseRedirect(reverse('orders:list'))
+
+
+def get_product_price(request, pk):
+    return JsonResponse({'price': Product.objects.get(pk=pk).price})
 
 
 @receiver(pre_save, sender=OrderItem)
