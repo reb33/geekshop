@@ -73,12 +73,14 @@
                                 class="fas fa-sign-in-alt"></i></a>
                     </li>
                 {% endif %}
-
-                </ul>
             </div>
         </div>
+    </div>
 </nav>
-{% include "show_error_and_mess.html" %}
+<div id="div_messages">
+    {% include "show_error_and_mess.html" %}
+</div>
+
 
 <!-- Page Content -->
 {% block content %}{% endblock %}
@@ -89,6 +91,7 @@
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/geekshop.js' %}"></script>
+{% block scripts %}{% endblock %}
 
 <!-- FontAwesome script -->
 <script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
