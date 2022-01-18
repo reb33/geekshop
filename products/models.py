@@ -21,5 +21,9 @@ class Product(models.Model):
     category = models.ForeignKey('ProductCategory', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
+    @staticmethod
+    def get_items():
+        return Product.objects.filter(is_active=True).order_by('category', 'name')
+
     def __str__(self):
         return f'{self.name} | {self.category}'
