@@ -175,9 +175,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-# id = 8030556
-# secret_key = ro3exWPo5xh2jRkAQ9Bk
-
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
