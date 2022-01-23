@@ -7,6 +7,8 @@ click==8.0.3
 cryptography==36.0.1
 defusedxml==0.7.1
 Django==3.2
+django-debug-toolbar==3.2.4
+django-debug-toolbar-template-profiler==2.0.2
 idna==3.3
 mypy-extensions==0.4.3
 oauthlib==3.1.1
@@ -27,3 +29,4 @@ sqlparse==0.4.2
 tomli==1.2.3
 typing_extensions==4.0.1
 urllib3==1.26.7
+wrapt==1.13.3
