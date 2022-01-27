@@ -46,9 +46,10 @@ def basket_edit(request, basket_id, quantity):
                 basket.save()
             except Exception as e:
                 messages.error(request, f'{type(e)} {str(e)}')
+                render_messages = render_to_string('show_error_and_mess.html', request=request)
                 # if str(e) == 'CHECK constraint failed: quantity':
                 #     messages.error(request, f'Товар {basket.product} закончился на складе')
-                #     render_messages = render_to_string('show_error_and_mess.html', request=request)
+                #
         else:
             basket.delete()
 
