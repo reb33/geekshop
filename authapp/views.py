@@ -6,6 +6,8 @@ from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, UpdateView
 
 from authapp.forms import ShopUserLoginForm, ShopUserRegistrationForm, UserProfileForm, UserProfileEditForm
@@ -21,6 +23,7 @@ class LoginListView(LoginView, BaseClassContextMixin):
     success_url = reverse_lazy('main')
 
 
+# @csrf_exempt
 # def login(request):
 #     if request.method == "POST":
 #         login_form = ShopUserLoginForm(data=request.POST)
