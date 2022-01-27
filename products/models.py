@@ -28,4 +28,4 @@ class Product(models.Model):
         return Product.objects.all().order_by('category', 'name')
 
     def __str__(self):
-        return f'{self.name} | {self.category}'
+        return f'{self.name}'
