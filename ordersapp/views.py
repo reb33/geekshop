@@ -1,10 +1,11 @@
 # Create your views here.
-from django.db import transaction
+from django.contrib import messages
+from django.db import transaction, IntegrityError
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
@@ -38,7 +39,8 @@ class OrderCreate(CreateView, BaseClassContextMixin):
         if self.request.POST:
             formset = OrderFormSet(self.request.POST)
         else:
-            basket_items = Basket.objects.filter(user=self.request.user).exclude(quantity=0)
+            basket_items = Basket.objects.filter(user=self.request.user).exclude(quantity=0).exclude(
+                product__is_active=False).select_related()
             if basket_items:
                 OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=basket_items.count())
                 formset = OrderFormSet()
@@ -85,7 +87,8 @@ class OrderUpdate(UpdateView):
         if self.request.POST:
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
-            formset = OrderFormSet(instance=self.object)
+            queryset = self.object.orderitems.select_related()
+            formset = OrderFormSet(instance=self.object, queryset=queryset)
             for form in formset:
                 if form.instance.pk:
                     form.initial['price'] = form.instance.product.price
@@ -99,11 +102,14 @@ class OrderUpdate(UpdateView):
         with transaction.atomic():
             if orderitems.is_valid():
                 orderitems.instance = self.object
-                orderitems.save()
-            if self.object.get_total_cost() == 0:
-                self.object.delete()
-
-        return super().form_valid(form)
+                try:
+                    orderitems.save()
+                    if self.object.get_total_cost() == 0:
+                        self.object.delete()
+                    return super().form_valid(form)
+                except IntegrityError as e:
+                    messages.error(self.request, f'Не удалось обновить заказ. Товар закончился на складе')
+        return self.form_invalid(form)
 
 
 class OrderDelete(DeleteView, BaseClassContextMixin):
@@ -133,7 +139,7 @@ def get_product_price(request, pk):
 @receiver(pre_save, sender=Basket)
 def product_quantity_update_save(sender, instance, **kwargs):
     if instance.pk:
-        instance.product.quantity -= instance.quantity - Basket.objects.get(pk=instance.pk).quantity
+        instance.product.quantity -= instance.quantity - instance.get_item_quantity(instance.pk)
     else:
         instance.product.quantity -= instance.quantity
     instance.product.save()

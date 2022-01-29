@@ -12,6 +12,9 @@ class ProductListView(ListView):
     model = Product
     template_name = 'admins/admin-products-read.html'
 
+    def get_queryset(self):
+        return Product.objects.all().select_related()
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['title'] = 'Список продуктов'

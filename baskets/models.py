@@ -36,6 +36,10 @@ class Basket(models.Model):
     def total_quantity(self):
         return sum(basket.quantity for basket in Basket.objects.filter(user=self.user))
 
+    @staticmethod
+    def get_item_quantity(pk):
+        return Basket.objects.get(pk=pk).quantity
+
     # def delete(self, return_quantity=True, *args, **kwargs):
     #     if return_quantity:
     #         self.product.quantity += self.quantity

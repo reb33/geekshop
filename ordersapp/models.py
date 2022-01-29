@@ -37,10 +37,15 @@ class Order(models.Model):
         return 'Текущий заказ: {}'.format(self.id)
 
     def get_total_quantity(self):
-        return sum(map(lambda i: i.quantity, self.orderitems.select_related()))
+        return sum(map(lambda i: i.quantity, self.get_selected_related_items()))
 
     def get_total_cost(self):
-        return sum(map(lambda i: i.get_product_cost(), self.orderitems.select_related()))
+        return sum(map(lambda i: i.get_product_cost(), self.get_selected_related_items()))
+
+    def get_selected_related_items(self):
+        if not getattr(self, '_selected_related_items', None):
+            self._selected_related_items = self.orderitems.select_related()
+        return self._selected_related_items
 
     def delete(self, *args, **kwargs):
         for item in self.orderitems.select_related():
@@ -58,3 +63,7 @@ class OrderItem(models.Model):
 
     def get_product_cost(self):
         return self.quantity * self.product.price
+
+    @staticmethod
+    def get_item_quantity(pk):
+        return OrderItem.objects.get(pk=pk).quantity

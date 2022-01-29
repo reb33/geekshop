@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db import IntegrityError
+from django.db.utils import IntegrityError
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 # Create your views here.
 from django.template.loader import render_to_string
@@ -45,9 +45,9 @@ def basket_edit(request, basket_id, quantity):
             try:
                 basket.save()
             except IntegrityError as e:
-                if str(e) == 'CHECK constraint failed: quantity':
-                    messages.error(request, f'Товар {basket.product} закончился на складе')
-                    render_messages = render_to_string('show_error_and_mess.html', request=request)
+                messages.error(request, f'Товар {basket.product} закончился на складе')
+                render_messages = render_to_string('show_error_and_mess.html', request=request)
+
         else:
             basket.delete()
 
