@@ -32,8 +32,7 @@ class Basket(models.Model):
     def sum(self):
         return self.quantity * self.product.price
 
-    # @cached_property
-    @property
+    @cached_property
     def get_user_baskets(self):
         return Basket.objects.filter(user=self.user)
 
