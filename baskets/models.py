@@ -1,6 +1,8 @@
 from django.db import models
 
 # Create your models here.
+from django.utils.functional import cached_property
+
 from authapp.models import ShopUser
 from products.models import Product
 
@@ -30,11 +32,16 @@ class Basket(models.Model):
     def sum(self):
         return self.quantity * self.product.price
 
+    # @cached_property
+    @property
+    def get_user_baskets(self):
+        return Basket.objects.filter(user=self.user)
+
     def total_sum(self):
-        return sum(basket.sum() for basket in Basket.objects.filter(user=self.user))
+        return sum(basket.sum() for basket in self.get_user_baskets)
 
     def total_quantity(self):
-        return sum(basket.quantity for basket in Basket.objects.filter(user=self.user))
+        return sum(basket.quantity for basket in self.get_user_baskets)
 
     @staticmethod
     def get_item_quantity(pk):
