@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load cache %}
 
 {% block content %}
    {% include 'ordersapp/includes/inc_order_summary.html' %}
@@ -38,7 +39,13 @@
                                             {{ field.value}} руб </span>
                                     {% endif %}
                                 {% else %}
-                                    {{ field }}
+                                    {% if field.name == 'product' %}
+                                        {% cache 120 ordersappedit_orderitemform_product field.value %}
+                                            {{ field }}
+                                        {% endcache %}
+                                    {% else %}
+                                        {{ field }}
+                                    {% endif %}
                                 {% endif %}
                            </td>
                        {% endfor %}

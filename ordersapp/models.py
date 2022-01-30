@@ -36,11 +36,17 @@ class Order(models.Model):
     def __str__(self):
         return 'Текущий заказ: {}'.format(self.id)
 
-    def get_total_quantity(self):
-        return sum(map(lambda i: i.quantity, self.get_selected_related_items()))
+    # def get_total_quantity(self):
+    #     return sum(map(lambda i: i.quantity, self.get_selected_related_items()))
+    #
+    # def get_total_cost(self):
+    #     return sum(map(lambda i: i.get_product_cost(), self.get_selected_related_items()))
 
-    def get_total_cost(self):
-        return sum(map(lambda i: i.get_product_cost(), self.get_selected_related_items()))
+    def get_summary(self):
+        return {
+            'total_quantity': sum(map(lambda i: i.quantity, self.get_selected_related_items())),
+            'total_cost': sum(map(lambda i: i.get_product_cost(), self.get_selected_related_items()))
+        }
 
     def get_selected_related_items(self):
         if not getattr(self, '_selected_related_items', None):

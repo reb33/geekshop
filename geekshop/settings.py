@@ -24,9 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-azd@y2t-$&3zs64fja9(hz6-f78l#6e$7e+f_&^@ff!mix*10a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+if os.environ.get('USE_LOCAL'):
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
+else:
+    DEBUG = False
+    ALLOWED_HOSTS = ['178.21.8.185']
 
 # Application definition
 
@@ -88,7 +92,6 @@ WSGI_APPLICATION = 'geekshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 if os.environ['DATABASE_TYPE'] == 'pg':
     DATABASES = {
@@ -224,3 +227,16 @@ if DEBUG:
         'template_profiler_panel.panels.template.TemplateProfilerPanel',
     ]
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = 120
+CACHE_MIDDLEWARE_KEY_PREFIX = 'geekshop'
+
+CACHES = {
+       'default': {
+           'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+           'LOCATION': '127.0.0.1:11211',
+       }
+   }
+
+LOW_CACHE = True
