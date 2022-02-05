@@ -18,4 +18,12 @@ class UserDispatchMixin(View):
 
     @method_decorator(user_passes_test(lambda u: u.is_authenticated))
     def dispatch(self, request, *args, **kwargs):
-        return super(UserDispatchMixin,self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+
+class SuperUserDispatchMixin(View):
+    pass
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)

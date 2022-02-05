@@ -51,7 +51,7 @@ class ProductForm(ModelForm):
     img = FileField(widget=forms.FileInput, required=False)
     price = DecimalField(decimal_places=2, max_digits=7)
     desc = CharField(max_length=100)
-    quality = IntegerField()
+    quantity = IntegerField()
     category = ModelChoiceField(queryset=ProductCategory.objects.all())
 
     class Meta:
