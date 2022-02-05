@@ -1,15 +1,16 @@
 # Create your views here.
 from django.contrib import messages
-from django.db import transaction, IntegrityError
+from django.db import transaction, IntegrityError, connection
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
 from django.forms import inlineformset_factory
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from baskets.models import Basket
+from geekshop.utils import db_profile_by_type
 from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 from products.mixin import BaseClassContextMixin
@@ -135,14 +136,15 @@ def get_product_price(request, pk):
     return JsonResponse({'price': Product.objects.get(pk=pk).price})
 
 
-@receiver(pre_save, sender=OrderItem)
-@receiver(pre_save, sender=Basket)
+@receiver(pre_save, sender=OrderItem, dispatch_uid='orderitem_change_quantity_pre_save')
+@receiver(pre_save, sender=Basket, dispatch_uid='basket_change_quantity_pre_save')
 def product_quantity_update_save(sender, instance, **kwargs):
     if instance.pk:
         instance.product.quantity -= instance.quantity - instance.get_item_quantity(instance.pk)
     else:
         instance.product.quantity -= instance.quantity
     instance.product.save()
+    db_profile_by_type(sender, 'UPDATE', connection.queries)
 
 
 @receiver(pre_delete, sender=OrderItem)
