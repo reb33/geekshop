@@ -34,7 +34,7 @@ class Basket(models.Model):
 
     @cached_property
     def get_user_baskets(self):
-        return Basket.objects.filter(user=self.user)
+        return Basket.objects.filter(user=self.user).filter(product__is_active=True)
 
     def total_sum(self):
         return sum(basket.sum() for basket in self.get_user_baskets)

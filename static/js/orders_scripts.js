@@ -94,14 +94,19 @@ window.addEventListener('load', () => {
         let total_forms = parseInt($('input#id_orderitems-TOTAL_FORMS').val());
         console.log(total_forms);
 
+        quantity_arr = [];
+        price_arr = [];
         for (let i = 0; i < total_forms; i++) {
-            quantity_arr[i] = parseInt($(`#id_orderitems-${i}-quantity`).val() || 0);
-            $('.td3>span').each((num, el) => price_arr[num] = parseFloat($(el).text().replace(',', '.')));
+            quantity_arr.push(parseInt($(`#id_orderitems-${i}-quantity`).val() || 0));
         }
+        $('.td3>span').each((num, el) => price_arr.push(parseFloat($(el).text().replace(',', '.'))));
     }
 
     function recalcTotalCost() {
-        let total_cost = price_arr.reduce((prev, curr) => prev + curr, 0)
+        let total_cost = 0;
+        for (let i = 0; i < price_arr.length; i++) {
+            total_cost += price_arr[i] * quantity_arr[i];
+        }
         $('span.order_total_cost').text(total_cost.toFixed(2).replace('.', ','));
     }
 
