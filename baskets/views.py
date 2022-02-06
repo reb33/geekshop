@@ -51,7 +51,7 @@ def basket_edit(request, basket_id, quantity):
         else:
             basket.delete()
 
-        baskets = Basket.objects.filter(user=request.user)
+        baskets = Basket.objects.filter(user=request.user).order_by('id')
         ctx = {'baskets': baskets}
         result = render_to_string('baskets/profile_baskets.html', ctx)
         response = {'result': result}

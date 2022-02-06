@@ -1,11 +1,9 @@
 from django.urls import path
 
 from admins.views import (
-    index
+    index, CategoryListView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView, UserListView, UserCreateView,
+    UserUpdateView, UserDeleteView, ProductListView, ProductCreateView, ProductUpdateView, ProductDeleteView
 )
-from admins.categories_views import CategoryListView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView
-from admins.users_views import UserListView, UserCreateView, UserUpdateView, UserDeleteView
-from admins.products_views import ProductListView, ProductCreateView, ProductUpdateView, ProductDeleteView
 
 app_name = 'admins'
 

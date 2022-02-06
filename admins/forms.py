@@ -34,10 +34,11 @@ class AdminUserEditForm(UserProfileForm):
 class CategoryForm(ModelForm):
     name = CharField(widget=TextInput())
     description = CharField(widget=TextInput(), required=False)
+    discount = forms.IntegerField(label='скидка', required=False, min_value=0, max_value=90, initial=0)
 
     class Meta:
         model = ProductCategory
-        fields = ['name', 'description']
+        exclude = ()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -50,7 +51,7 @@ class ProductForm(ModelForm):
     img = FileField(widget=forms.FileInput, required=False)
     price = DecimalField(decimal_places=2, max_digits=7)
     desc = CharField(max_length=100)
-    quality = IntegerField()
+    quantity = IntegerField()
     category = ModelChoiceField(queryset=ProductCategory.objects.all())
 
     class Meta:
