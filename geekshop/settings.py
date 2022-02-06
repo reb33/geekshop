@@ -163,6 +163,7 @@ LOGIN_URL = 'authapp:login'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_ERROR_URL = '/'
 
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
@@ -232,10 +233,10 @@ CACHE_MIDDLEWARE_SECONDS = 120
 CACHE_MIDDLEWARE_KEY_PREFIX = 'geekshop'
 
 CACHES = {
-       'default': {
-           'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-           'LOCATION': '127.0.0.1:11211',
-       }
-   }
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
 
 LOW_CACHE = True
