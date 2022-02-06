@@ -140,9 +140,9 @@ class UserDeleteView(DeleteView, SuperUserDispatchMixin, BaseClassContextMixin):
     success_url = reverse_lazy("admins:admin_users")
     title = "Удалить пользователя"
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.is_active = False
-        self.object.save()
-        success_url = self.get_success_url()
-        return HttpResponseRedirect(success_url)
+    # def delete(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     self.object.is_active = False
+    #     self.object.save()
+    #     success_url = self.get_success_url()
+    #     return HttpResponseRedirect(success_url)
