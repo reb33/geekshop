@@ -163,7 +163,6 @@ LOGIN_URL = 'authapp:login'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_ERROR_URL = '/'
 
-DOMAIN_NAME = 'http://localhost:8000'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
